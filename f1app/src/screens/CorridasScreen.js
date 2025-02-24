@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  StyleSheet,
-} from "react-native";
+import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import CorridaCard from "../components/CorridaCard";
 
 export default function CorridasScreen() {
