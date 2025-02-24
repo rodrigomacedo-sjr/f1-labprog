@@ -2,7 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import PilotosStackNavigator from "../navigation/PilotosStackNavigator";
 import EquipeStackNavigator from "../navigation/EquipeStackNavigator";
-import CorridasScreen from "../screens/CorridasScreen";
+import CorridaStackNavigator from "./CorridaStackNavigator";
 import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -29,7 +29,7 @@ export default function BottomTabNavigator() {
     >
       <Tab.Screen name="Pilotos" component={PilotosStackNavigator} />
       <Tab.Screen name="Equipes" component={EquipeStackNavigator} />
-      <Tab.Screen name="Corridas" component={CorridasScreen} />
+      <Tab.Screen name="Corridas" component={CorridaStackNavigator} />
     </Tab.Navigator>
   );
 }

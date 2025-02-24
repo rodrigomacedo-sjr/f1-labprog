@@ -10,16 +10,7 @@ export default function EquipeCard({ equipe }) {
   };
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.card,
-        {
-          borderColor: equipe.team_colour ? `#${equipe.team_colour}` : "#000",
-          borderWidth: 2,
-        },
-      ]}
-      onPress={handlePress}
-    >
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
       <View style={styles.info}>
         <Text style={styles.name}>{equipe.name}</Text>
         <Text style={styles.nationality}>

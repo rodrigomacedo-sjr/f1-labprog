@@ -1,4 +1,3 @@
-// src/screens/EquipeDetailsScreen.js
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -9,7 +8,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
-import PilotoCard from "../components/PilotoCard"; // Lembre de atualizar o nome do componente, se necessário
+import PilotoCard from "../components/PilotoCard";
 
 export default function EquipeDetailsScreen({ route, navigation }) {
   const { equipe } = route.params;
@@ -19,14 +18,12 @@ export default function EquipeDetailsScreen({ route, navigation }) {
   useEffect(() => {
     const fetchTeamDrivers = async () => {
       try {
-        // 1. Buscar os pilotos relacionados à equipe via Ergast API
         const responseErgast = await fetch(
           `http://ergast.com/api/f1/constructors/${equipe.constructorId}/drivers.json`,
         );
         const jsonErgast = await responseErgast.json();
         const teamDrivers = jsonErgast.MRData.DriverTable.Drivers;
 
-        // 2. Para cada piloto, buscar dados adicionais na OpenF1 API
         const enrichedDrivers = await Promise.all(
           teamDrivers.map(async (piloto) => {
             if (piloto.permanentNumber) {
@@ -68,20 +65,12 @@ export default function EquipeDetailsScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.card,
-          {
-            borderColor: equipe.team_colour ? `#${equipe.team_colour}` : "#000",
-            borderWidth: 2,
-          },
-        ]}
-      >
+      <View style={styles.card}>
         <Text style={styles.name}>{equipe.name}</Text>
         <Text style={styles.nationality}>
           Nacionalidade: {equipe.nationality}
         </Text>
-        <Button title="Ver no Wikipedia" onPress={openWikipedia} />
+        <Button title="Ver na Wikipedia" onPress={openWikipedia} />
       </View>
 
       <Text style={styles.sectionTitle}>Histórico de Pilotos:</Text>
@@ -94,10 +83,7 @@ export default function EquipeDetailsScreen({ route, navigation }) {
           renderItem={({ item }) => (
             <PilotoCard
               piloto={item}
-              onPress={() =>
-                // Usa navigation.push para empilhar a tela de detalhes do Piloto na mesma stack
-                navigation.push("PilotoDetails", { piloto: item })
-              }
+              onPress={() => navigation.push("PilotoDetails", { piloto: item })}
             />
           )}
           contentContainerStyle={styles.list}
