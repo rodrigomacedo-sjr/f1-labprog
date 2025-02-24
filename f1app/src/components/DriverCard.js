@@ -2,24 +2,46 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
 export default function DriverCard({ driver }) {
-  // Extrar informações do objeto driver
-  const { givenName, familyName, code, nationality, permanentNumber } = driver;
+  // Extrair dados
+  const {
+    broadcast_name,
+    first_name,
+    last_name,
+    permanentNumber,
+    headshot_url,
+    team_colour,
+    team_name,
+    country_code,
+    code,
+  } = driver;
 
-  // API ergast não dá a foto, utilizar openf1 depois para complementar
-  // Utilizando API de placeholder por enquanto
-  const photoUrl = `https://via.placeholder.com/100?text=${code}`;
+  // Tenta usar a foto do piloto, se não der, usa placeholder
+  const photoUrl = headshot_url
+    ? headshot_url
+    : `https://via.placeholder.com/100?text=${code}`;
 
   return (
-    <View style={styles.card}>
+    <View
+      style={[
+        styles.card,
+        {
+          borderColor: team_colour ? `#${team_colour}` : "#000",
+          borderWidth: 2,
+        },
+      ]}
+    >
       <Image source={{ uri: photoUrl }} style={styles.image} />
       <View style={styles.info}>
         <Text style={styles.name}>
-          {givenName} {familyName}
+          {first_name} {last_name}
         </Text>
-        <Text style={styles.detail}>
-          Número: {permanentNumber ? permanentNumber : "N/A"}
+        {country_code && (
+          <Text style={styles.country}>País: {country_code}</Text>
+        )}
+        <Text style={styles.team}>{team_name}</Text>
+        <Text style={styles.number}>
+          #{permanentNumber ? permanentNumber : "N/A"}
         </Text>
-        <Text style={styles.detail}>País: {nationality}</Text>
       </View>
     </View>
   );
@@ -34,7 +56,7 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     marginHorizontal: 16,
 
-    // Efeito de sombreamento
+    // Efeito de sombra
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -54,8 +76,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  detail: {
+  country: {
     fontSize: 14,
+    color: "#333",
+  },
+  team: {
+    fontSize: 16,
     color: "#555",
+    marginVertical: 4,
+  },
+  number: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#e91e63",
   },
 });
