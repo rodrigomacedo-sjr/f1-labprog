@@ -237,9 +237,9 @@ bem mais simples que o boilerplate
 **criar componente de card do piloto**
 importante para deixar o código bonito e modular
 ``` bash
-f1app/src/components/DriverCard.js
+f1app/src/components/PilotoCard.js
 ```
-O *DriverCard* recebe um objeto *driver* via *props* e exibe os dados
+O *PilotoCard* recebe um objeto *piloto* via *props* e exibe os dados
 Essa API não retorna a imagem, estou utilizando uma placeholder por enquantos, vou tentar inserir a foto com outra API depois
 Os cards ficam espaçados, com bordas arredondadas e sombreamento
 
@@ -250,7 +250,7 @@ f1app/src/screens/PilotosScreen.js
 ```
 
 useState
-	`drivers` armazena a lista de pilotos
+	`pilotos` armazena a lista de pilotos
 	`loading` estado de carregando
 useEffect
 	executa `fetchDrivers` ao montar componente
@@ -259,12 +259,12 @@ useEffect
 	em caso de erro, printa no console e desativa o loading com `finally`
 FlatList
 	exibe a lista de pilotos
-	renderiza cada item `DriverCard`
+	renderiza cada item `PilotoCard`
 	`keyExtractor` utiliza `driverId` como chave
 ActivityIndicator
 	exibe um spinner enquanto carrega os dados
 
-**melhorando o driver card**
+**melhorando o piloto card**
 ``` js
  const photoUrl = headshot_url ? headshot_url : `https://via.placeholder.com/100?text=${code}`;
 ```

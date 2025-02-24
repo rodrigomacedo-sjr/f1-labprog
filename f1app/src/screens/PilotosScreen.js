@@ -1,10 +1,9 @@
-// src/screens/PilotosScreen.js
 import React, { useState, useEffect } from "react";
 import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
-import DriverCard from "../components/DriverCard";
+import PilotoCard from "../components/PilotoCard";
 
 export default function PilotosScreen() {
-  const [drivers, setDrivers] = useState([]);
+  const [pilotos, setPilotos] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,39 +21,31 @@ export default function PilotosScreen() {
         const openF1Drivers = await responseOpenF1.json(); // Retorno: array de objetos
 
         // Junta os dados usando Drivers.code (Ergast) e name_acronym (OpenF1)
-        const mergedDrivers = ergastDrivers.map((driver) => {
-          const driverCode = driver.code ? driver.code.toUpperCase() : "";
-          // Procura na OpenF1 um piloto cujo name_acronym corresponda
+        const mergedDrivers = ergastDrivers.map((piloto) => {
+          const pilotoCode = piloto.code ? piloto.code.toUpperCase() : "";
           const additionalData = openF1Drivers.find(
             (item) =>
               item.name_acronym &&
-              item.name_acronym.toUpperCase() === driverCode,
+              item.name_acronym.toUpperCase() === pilotoCode,
           );
 
-          // Prioriza os dados da OpenF1
           return {
-            driverId: driver.driverId,
-
-            // broadcast_name (OpenF1) > givenName/familyName (ergast)
-            broadcast_name: additionalData?.broadcast_name || null,
-
-            first_name: additionalData?.first_name || driver.givenName,
-            last_name: additionalData?.last_name || driver.familyName,
-
-            // driver_number (OpenF1) > permanentNumber (ergast)
+            driverId: piloto.driverId,
+            givenName: piloto.givenName,
+            familyName: piloto.familyName,
             permanentNumber:
-              additionalData?.driver_number || driver.permanentNumber,
-
+              additionalData?.driver_number || piloto.permanentNumber,
             headshot_url: additionalData?.headshot_url || null,
-
             team_name: additionalData?.team_name || "Equipe não disponível",
             team_colour: additionalData?.team_colour || null,
             country_code: additionalData?.country_code || null,
-            code: driver.code,
+            code: piloto.code,
+            dateOfBirth: piloto.dateOfBirth,
+            nationality: piloto.nationality,
           };
         });
 
-        setDrivers(mergedDrivers);
+        setPilotos(mergedDrivers);
       } catch (error) {
         console.error("Erro ao buscar dados dos pilotos:", error);
       } finally {
@@ -76,9 +67,9 @@ export default function PilotosScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={drivers}
+        data={pilotos}
         keyExtractor={(item) => item.driverId}
-        renderItem={({ item }) => <DriverCard driver={item} />}
+        renderItem={({ item }) => <PilotoCard piloto={item} />}
         contentContainerStyle={styles.list}
       />
     </View>
@@ -89,6 +80,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f2f2f2",
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    margin: 16,
   },
   list: {
     paddingVertical: 10,
