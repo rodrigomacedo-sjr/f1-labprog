@@ -94,3 +94,141 @@ Extras
 	resultados completos de corridas passadas
 Sonho
 	live stats + radio de corridas ao vivo
+# Passo a passo
+## Boilerplate
+**Instalar requisitos**
+nvm, node, expo-cli
+``` bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+nvm install --lts
+
+npm install -g expo-cli
+```
+
+**iniciar projeto**
+``` bash
+npx create-expo-app f1app --template blank
+npm expo start
+```
+Aqui eu tive que trocar de npx (tutorial) para npm
+Não entendi o motivo
+
+**para poder ver as mudanças no navegador**
+``` bash
+npx expo install react-dom react-native-web @expo/metro-runtime
+```
+## Fazer a bottom tab
+``` bash
+npm install @react-navigation/native react-native-screens react-native-safe-area-context @expo/vector-icons
+
+npm install @react-navigation/bottom-tabs
+```
+
+Instalar o bottom-tabs e ícones prontos pensando na estética.
+
+react-native-screens e react-native-safe-area-context
+	otimizar a performance e respeitar áreas seguras
+
+
+**criar plaholders para as telas**
+``` js
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+
+export default function CorridasScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Corridas</Text>
+      {/* adicionar lista de corridas depois */}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  title: { fontSize: 24, fontWeight: "bold" },
+});
+```
+telas semelhantes foram criadas para 'Equipes' e 'Pilotos'
+
+**configurar o bottomtab navigator**
+``` js
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+
+import PilotosScreen from '../screens/PilotosScreen';
+import EquipesScreen from '../screens/EquipesScreen';
+import CorridasScreen from '../screens/CorridasScreen';
+
+const Tab = createBottomTabNavigator();
+
+export default function BottomTabNavigator() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="Pilotos"
+        screenOptions={({ route }) => ({
+          headerShown: false, 
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            if (route.name === 'Pilotos') {
+              iconName = focused ? 'people' : 'people-outline';
+            } else if (route.name === 'Equipes') {
+              iconName = focused ? 'car' : 'car-outline';
+            } else if (route.name === 'Corridas') {
+              iconName = focused ? 'calendar' : 'calendar-outline';
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: '#e91e63',
+          tabBarInactiveTintColor: 'gray',
+          tabBarStyle: {
+            backgroundColor: '#fff',
+            borderTopWidth: 0,
+            elevation: 5,
+            shadowOpacity: 0.1,
+            height: 60,
+            paddingBottom: 5,
+          },
+          tabBarLabelStyle: {
+            fontSize: 12,
+            marginBottom: 5,
+          },
+        })}
+      >
+        <Tab.Screen name="Pilotos" component={PilotosScreen} />
+        <Tab.Screen name="Equipes" component={EquipesScreen} />
+        <Tab.Screen name="Corridas" component={CorridasScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+```
+
+NavigationContainer
+	envolve a navegação.
+createBottomTabNavigator
+	cria a estrutura de abas inferiores.
+screenOptions
+	define configurações para todas as abas: ícones que mudam conforme o foco, cores de ativo/inativo, e outros estilos customizados
+ionicons
+	para os ícones
+
+**atualizar App.js**
+``` js
+import React from "react";
+import BottomTabNavigator from "./src/navigation/BottomTabNavigator";
+
+export default function App() {
+  return <BottomTabNavigator />;
+}
+```
+bem mais simples que o boilerplate
