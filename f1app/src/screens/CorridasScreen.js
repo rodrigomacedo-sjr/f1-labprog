@@ -39,7 +39,6 @@ export default function CorridasScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Corridas</Text>
       <FlatList
         data={corridas}
         keyExtractor={(item) => item.round}
