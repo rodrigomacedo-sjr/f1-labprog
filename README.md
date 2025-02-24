@@ -57,10 +57,10 @@ Conceitos importantes de funcionamento
 	Isso cumpre o requisito de armazenamento e recuperação de dados.
 	Seria interessante uma featura para o futuro de notificar o usuário um dia antes das corridas, e quando seus pilotos/equipes favoritas conseguiseem pódios, mas fica como extra também
 ## A lista de coisas a fazer
-Criar boilerplate do aplicativo
-Fazer a Bottom Tab com as opções de telas
-Conseguir carregas as listas em suas respectivas telas
-	pilotos
+- [x] Criar boilerplate do aplicativo
+- [x] Fazer a Bottom Tab com as opções de telas
+- [ ] Conseguir carregas as listas em suas respectivas telas
+	- [x] pilotos
 	equipes
 	corridas
 Tela de mais informações
@@ -232,3 +232,47 @@ export default function App() {
 }
 ```
 bem mais simples que o boilerplate
+## Carregar Listas
+### Pilotos
+**criar componente de card do piloto**
+importante para deixar o código bonito e modular
+``` bash
+f1app/src/components/DriverCard.js
+```
+O *DriverCard* recebe um objeto *driver* via *props* e exibe os dados
+Essa API não retorna a imagem, estou utilizando uma placeholder por enquantos, vou tentar inserir a foto com outra API depois
+Os cards ficam espaçados, com bordas arredondadas e sombreamento
+
+**criar a tela de pilotos**
+organizar os dados
+``` shell
+f1app/src/screens/PilotosScreen.js
+```
+
+useState
+	`drivers` armazena a lista de pilotos
+	`loading` estado de carregando
+useEffect
+	executa `fetchDrivers` ao montar componente
+	chama a API com `fetch` e pega o resultado em JSON
+	'polir' o JSON com `json.MRData.DriverTable.Drivers`
+	em caso de erro, printa no console e desativa o loading com `finally`
+FlatList
+	exibe a lista de pilotos
+	renderiza cada item `DriverCard`
+	`keyExtractor` utiliza `driverId` como chave
+ActivityIndicator
+	exibe um spinner enquanto carrega os dados
+
+**melhorando o driver card**
+``` js
+ const photoUrl = headshot_url ? headshot_url : `https://via.placeholder.com/100?text=${code}`;
+```
+foto de verdade (vinda de outra API)
+adicionando também nome da equipe e cor da equipe
+
+atualiza cor da borda do card para ser cor da equipe
+
+### Equipes
+...
+
