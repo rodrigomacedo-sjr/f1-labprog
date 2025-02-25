@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+  TextInput,
+} from "react-native";
 import PilotoCard from "../components/PilotoCard";
 
 export default function PilotosScreen() {
   const [pilotos, setPilotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     const fetchDriversData = async () => {
@@ -42,6 +49,7 @@ export default function PilotosScreen() {
             code: piloto.code,
             dateOfBirth: piloto.dateOfBirth,
             nationality: piloto.nationality,
+            broadcast_name: additionalData?.broadcast_name || "",
           };
         });
 
@@ -56,6 +64,19 @@ export default function PilotosScreen() {
     fetchDriversData();
   }, []);
 
+  // Filtra os pilotos com base no texto digitado (case insensitive)
+  const filteredPilotos = pilotos.filter((piloto) => {
+    const searchLower = searchText.toLowerCase();
+    const fullName = `${piloto.givenName} ${piloto.familyName}`.toLowerCase();
+    const code = piloto.code ? piloto.code.toLowerCase() : "";
+    const broadcastName = piloto.broadcast_name.toLowerCase();
+    return (
+      fullName.includes(searchLower) ||
+      code.includes(searchLower) ||
+      broadcastName.includes(searchLower)
+    );
+  });
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -66,8 +87,16 @@ export default function PilotosScreen() {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Pesquisar pilotos..."
+        value={searchText}
+        onChangeText={setSearchText}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
       <FlatList
-        data={pilotos}
+        data={filteredPilotos}
         keyExtractor={(item) => item.driverId}
         renderItem={({ item }) => <PilotoCard piloto={item} />}
         contentContainerStyle={styles.list}
@@ -81,10 +110,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f2f2f2",
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
+  searchInput: {
+    height: 40,
     margin: 16,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
   },
   list: {
     paddingVertical: 10,
