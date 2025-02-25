@@ -18,7 +18,7 @@ export default function PilotosScreen() {
 
         // Busca mais dados na OpenF1 API
         const responseOpenF1 = await fetch("https://api.openf1.org/v1/drivers");
-        const openF1Drivers = await responseOpenF1.json(); // Retorno: array de objetos
+        const openF1Drivers = await responseOpenF1.json();
 
         // Junta os dados usando Drivers.code (Ergast) e name_acronym (OpenF1)
         const mergedDrivers = ergastDrivers.map((piloto) => {
