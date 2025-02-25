@@ -1,19 +1,18 @@
-// src/contexts/FavoritesContext.js
 import React, { createContext, useState } from "react";
 
-// Cria o contexto de favoritos
+// Cria o contexto para armazenar os favoritos
 export const FavoritesContext = createContext();
 
-// Provider que envolverá o app e gerenciará o estado global dos favoritos
+// Provider que gerencia o estado global dos favoritos e envolve a aplicação
 export const FavoritesProvider = ({ children }) => {
-  // Estado inicial com categorias para pilotos, equipes e corridas
+  // Estado inicial com arrays para pilotos, equipes e corridas
   const [favorites, setFavorites] = useState({
     pilotos: [],
     equipes: [],
     corridas: [],
   });
 
-  // Funções para gerenciar pilotos
+  // pilotoId como chave
   const addFavoritePiloto = (piloto) => {
     setFavorites((prev) => ({
       ...prev,
@@ -28,7 +27,6 @@ export const FavoritesProvider = ({ children }) => {
     }));
   };
 
-  // Funções para gerenciar equipes
   const addFavoriteEquipe = (equipe) => {
     setFavorites((prev) => ({
       ...prev,
@@ -36,6 +34,7 @@ export const FavoritesProvider = ({ children }) => {
     }));
   };
 
+  // constructorId como chave
   const removeFavoriteEquipe = (constructorId) => {
     setFavorites((prev) => ({
       ...prev,
@@ -43,7 +42,7 @@ export const FavoritesProvider = ({ children }) => {
     }));
   };
 
-  // Funções para gerenciar corridas (tracks)
+  // round + season como chave
   const addFavoriteCorrida = (corrida) => {
     setFavorites((prev) => ({
       ...prev,
@@ -52,7 +51,6 @@ export const FavoritesProvider = ({ children }) => {
   };
 
   const removeFavoriteCorrida = (round) => {
-    // Considerando que o "round" seja um identificador único para a corrida
     setFavorites((prev) => ({
       ...prev,
       corridas: prev.corridas.filter((c) => c.round !== round),

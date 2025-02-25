@@ -12,10 +12,17 @@ import PilotoCard from "../components/PilotoCard";
 import { FavoritesContext } from "../contexts/FavoritesContext";
 import { Ionicons } from "@expo/vector-icons";
 
+// Tela que exibe os detalhes de uma equipe e seu histórico de pilotos
 export default function EquipeDetailsScreen({ route, navigation }) {
+
+  // Extrai os dados da equipe dos parâmetros da rota
   const { equipe } = route.params;
+
+  // Estados para armazenar os pilotos da equipe e o status de carregamento
   const [pilotos, setPilotos] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Acessa o contexto de favoritos para gerenciar a equipe favoritada
   const { favorites, addFavoriteEquipe, removeFavoriteEquipe } =
     useContext(FavoritesContext);
 
@@ -24,6 +31,7 @@ export default function EquipeDetailsScreen({ route, navigation }) {
     (item) => item.constructorId === equipe.constructorId,
   );
 
+  // Alterna o status de favorito da equipe
   const toggleFavorite = () => {
     if (isFavorite) {
       removeFavoriteEquipe(equipe.constructorId);
@@ -32,6 +40,7 @@ export default function EquipeDetailsScreen({ route, navigation }) {
     }
   };
 
+  // Busca os pilotos da equipe, 'melhorando' os dados com a API OpenF1 se possível
   useEffect(() => {
     const fetchTeamDrivers = async () => {
       try {
@@ -41,6 +50,7 @@ export default function EquipeDetailsScreen({ route, navigation }) {
         const jsonErgast = await responseErgast.json();
         const teamDrivers = jsonErgast.MRData.DriverTable.Drivers;
 
+        // Para cada piloto, tenta buscar dados adicionais via API OpenF1
         const enrichedDrivers = await Promise.all(
           teamDrivers.map(async (piloto) => {
             if (piloto.permanentNumber) {
@@ -74,27 +84,20 @@ export default function EquipeDetailsScreen({ route, navigation }) {
     fetchTeamDrivers();
   }, [equipe.constructorId]);
 
+  // Abre a página da Wikipedia da equipe, se disponível
   const openWikipedia = () => {
     if (equipe.url) {
       Linking.openURL(equipe.url);
     }
   };
 
-  // Header do FlatList com o card da equipe
+  // Header da lista que exibe os detalhes da equipe
   const ListHeader = () => (
     <>
       <View style={styles.teamCard}>
-        {/* Barra lateral colorida */}
-        <View
-          style={[
-            styles.colorBar,
-            {
-              backgroundColor: equipe.team_colour
-                ? `#${equipe.team_colour}`
-                : "#000",
-            },
-          ]}
-        />
+
+        {/* Barra lateral colorida que indica a cor da equipe */}
+        <View style={styles.colorBar}/>
         <View style={styles.teamInfo}>
           <Text style={styles.teamName}>{equipe.name}</Text>
           <Text style={styles.teamNationality}>
@@ -104,7 +107,8 @@ export default function EquipeDetailsScreen({ route, navigation }) {
             <Text style={styles.wikiButtonText}>Ver na Wikipedia</Text>
           </TouchableOpacity>
         </View>
-        {/* Botão de Favoritar */}
+
+        {/* Botão para favoritar a equipe */}
         <TouchableOpacity
           style={styles.favoriteButton}
           onPress={toggleFavorite}
@@ -120,6 +124,7 @@ export default function EquipeDetailsScreen({ route, navigation }) {
     </>
   );
 
+  // Enquanto os dados estão sendo carregados, exibe um indicador de atividade
   if (loading) {
     return (
       <View style={styles.loadingContainer}>

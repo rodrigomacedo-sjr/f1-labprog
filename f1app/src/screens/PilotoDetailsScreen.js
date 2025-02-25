@@ -10,15 +10,20 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { FavoritesContext } from "../contexts/FavoritesContext";
 
-// Função para formatar data de "YYYY-MM-DD" para "DD/MM/YYYY"
+// Converte uma data do formato "YYYY-MM-DD" para "DD/MM/YYYY"
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
   const [year, month, day] = dateStr.split("-");
   return `${day}/${month}/${year}`;
 };
 
+// Tela de detalhes do piloto, exibindo informações e permitindo favoritar
 export default function PilotoDetailsScreen({ route }) {
+
+  // Extrai o objeto piloto dos parâmetros da rota
   const { piloto } = route.params;
+
+  // Obtém os favoritos e funções para gerenciar favoritos do contexto
   const { favorites, addFavoritePiloto, removeFavoritePiloto } =
     useContext(FavoritesContext);
 
@@ -27,6 +32,7 @@ export default function PilotoDetailsScreen({ route }) {
     (p) => p.driverId === piloto.driverId,
   );
 
+  // Alterna o status de favorito do piloto
   const toggleFavorite = () => {
     if (isFavorite) {
       removeFavoritePiloto(piloto.driverId);
@@ -35,17 +41,18 @@ export default function PilotoDetailsScreen({ route }) {
     }
   };
 
-  // Se não houver headshot_url, usamos um placeholder sem texto
+  // Define a URL da foto do piloto ou utiliza um placeholder se não houver imagem
   const photoUrl = piloto.headshot_url
     ? piloto.headshot_url
     : "https://via.placeholder.com/150";
-  // Borda: cor da equipe ou preto
+
+  // Define a cor da borda da imagem usando a cor da equipe ou preto se não estiver disponível
   const borderColor = piloto.team_colour ? `#${piloto.team_colour}` : "#000";
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.detailsCard}>
-        {/* Botão de Favoritar */}
+        {/* Botão para favoritar/destacar o piloto */}
         <TouchableOpacity
           style={styles.favoriteButton}
           onPress={toggleFavorite}
@@ -56,10 +63,14 @@ export default function PilotoDetailsScreen({ route }) {
             color={isFavorite ? "#e91e63" : "#555"}
           />
         </TouchableOpacity>
+
+        {/* Exibe a foto do piloto com borda colorida */}
         <Image
           source={{ uri: photoUrl }}
           style={[styles.image, { borderColor }]}
         />
+
+        {/* Exibe nome e outras informações do piloto */}
         <Text style={styles.name}>
           {piloto.givenName} {piloto.familyName}
         </Text>

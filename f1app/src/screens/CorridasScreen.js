@@ -11,11 +11,15 @@ import {
 } from "react-native";
 import CorridaCard from "../components/CorridaCard";
 
+// Tela que exibe a lista de corridas
 export default function CorridasScreen() {
+
+  // Estados para armazenar as corridas, o status de carregamento e o texto de pesquisa
   const [corridas, setCorridas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
 
+  // useEffect para buscar os dados das corridas assim que o componente é montado
   useEffect(() => {
     const fetchCorridas = async () => {
       try {
@@ -48,6 +52,7 @@ export default function CorridasScreen() {
     );
   });
 
+  // Enquanto os dados não são carregados, exibe um indicador de atividade
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -58,6 +63,8 @@ export default function CorridasScreen() {
 
   return (
     <View style={styles.container}>
+
+      {/* Campo de pesquisa para filtrar as corridas */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -67,6 +74,8 @@ export default function CorridasScreen() {
           autoCapitalize="none"
           autoCorrect={false}
         />
+
+        {/* Botão para limpar o texto da pesquisa */}
         {searchText !== "" && (
           <TouchableOpacity
             style={styles.clearButton}
@@ -79,6 +88,8 @@ export default function CorridasScreen() {
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Lista de corridas filtradas */}
       <FlatList
         data={filteredCorridas}
         keyExtractor={(item) => item.round}
@@ -93,7 +104,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f2f2f2",
-    paddingVertical: 10,
   },
   searchContainer: {
     flexDirection: "row",

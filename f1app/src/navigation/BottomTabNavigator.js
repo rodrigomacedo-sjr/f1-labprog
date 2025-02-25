@@ -6,13 +6,18 @@ import CorridaStackNavigator from "./CorridaStackNavigator";
 import FavoritosStackNavigator from "./FavoritosStackNavigator";
 import { Ionicons } from "@expo/vector-icons";
 
+// Cria o navegador de abas inferiores
 const Tab = createBottomTabNavigator();
 
+// Componente que define as abas da aplicação
 export default function BottomTabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        // Remove o cabeçalho padrão de cada tela
         headerShown: false,
+
+        // Define os ícones das abas conforme a rota e se está selecionada
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === "Pilotos") {
@@ -26,10 +31,13 @@ export default function BottomTabNavigator() {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
+
+        // Configura as cores para abas ativas e inativas
         tabBarActiveTintColor: "#e91e63",
         tabBarInactiveTintColor: "gray",
       })}
     >
+      {/* Define cada aba com sua respectiva stack navigator */}
       <Tab.Screen name="Pilotos" component={PilotosStackNavigator} />
       <Tab.Screen name="Equipes" component={EquipeStackNavigator} />
       <Tab.Screen name="Corridas" component={CorridaStackNavigator} />

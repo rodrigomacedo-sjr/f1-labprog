@@ -10,13 +10,14 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { FavoritesContext } from "../contexts/FavoritesContext";
 
-// Função para formatar data de "YYYY-MM-DD" para "DD/MM/YYYY"
+// Formata data de "YYYY-MM-DD" para "DD/MM/YYYY"
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
   const [year, month, day] = dateStr.split("-");
   return `${day}/${month}/${year}`;
 };
 
+// Componente para exibir uma linha de informação com label e valor
 const InfoRow = ({ label, value }) => (
   <View style={styles.infoRow}>
     <Text style={styles.infoLabel}>{label}</Text>
@@ -24,6 +25,7 @@ const InfoRow = ({ label, value }) => (
   </View>
 );
 
+// Tela de detalhes da corrida
 export default function CorridaDetailsScreen({ route }) {
   const { corrida } = route.params;
   const {
@@ -40,14 +42,16 @@ export default function CorridaDetailsScreen({ route }) {
     Qualifying,
   } = corrida;
 
+  // Acessa os favoritos e funções de gerenciamento do contexto
   const { favorites, addFavoriteCorrida, removeFavoriteCorrida } =
     useContext(FavoritesContext);
 
-  // Verifica se a corrida já está favoritada (usando season e round como identificador)
+  // Verifica se a corrida já está favoritada, usando season e round como identificador
   const isFavorite = favorites.corridas.some(
     (c) => c.round === corrida.round && c.season === corrida.season,
   );
 
+  // Alterna o status de favorito da corrida
   const toggleFavorite = () => {
     if (isFavorite) {
       removeFavoriteCorrida(corrida.round);
@@ -56,6 +60,7 @@ export default function CorridaDetailsScreen({ route }) {
     }
   };
 
+  // Abre a URL da Wikipedia, se disponível
   const openWikipedia = () => {
     if (url) {
       Linking.openURL(url);
@@ -71,7 +76,7 @@ export default function CorridaDetailsScreen({ route }) {
         <Text style={styles.headerText}>{raceName}</Text>
       </View>
       <View style={styles.detailsCard}>
-        {/* Botão de Favoritar posicionado no canto superior direito do card */}
+        {/* Botão para favoritar/desfavoritar a corrida */}
         <TouchableOpacity
           style={styles.favoriteButton}
           onPress={toggleFavorite}
@@ -120,11 +125,13 @@ export default function CorridaDetailsScreen({ route }) {
         )}
         {Qualifying && (
           <InfoRow
-            label="Qualificação:"
+            label="Qualificatória:"
             value={`${formatDate(Qualifying.date)} - ${Qualifying.time ? Qualifying.time.substring(0, 5) : "N/A"
               }`}
           />
         )}
+
+        {/* Botão para acessar a Wikipedia */}
         <TouchableOpacity style={styles.button} onPress={openWikipedia}>
           <Text style={styles.buttonText}>Ver na Wikipedia</Text>
         </TouchableOpacity>

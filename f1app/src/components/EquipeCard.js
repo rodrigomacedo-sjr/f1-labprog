@@ -3,21 +3,26 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function EquipeCard({ equipe }) {
+  // Hook para acessar a navegação entre telas
   const navigation = useNavigation();
 
+  // Função chamada ao pressionar o card, navegando para a tela de detalhes
   const handlePress = () => {
     navigation.navigate("EquipeDetails", { equipe });
   };
 
   return (
+    // TouchableOpacity torna o card clicável
     <TouchableOpacity style={styles.card} onPress={handlePress}>
+      {/* Barra de cor à esquerda */}
       <View style={styles.colorBar} />
+
+      {/* Container com as informações da equipe */}
       <View style={styles.info}>
         <Text style={styles.name}>{equipe.name}</Text>
         <Text style={styles.nationality}>
           Nacionalidade: {equipe.nationality}
         </Text>
-        {equipe.url && <Text style={styles.link}>Ver na Wikipedia</Text>}
       </View>
     </TouchableOpacity>
   );
@@ -31,8 +36,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginVertical: 6,
     marginHorizontal: 16,
-    elevation: 3,
-    shadowColor: "#000",
+    elevation: 3, // Sombra para Android
+    shadowColor: "#000", // Sombra para iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -54,11 +59,5 @@ const styles = StyleSheet.create({
   nationality: {
     fontSize: 16,
     color: "#555",
-  },
-  link: {
-    fontSize: 14,
-    color: "#1e90ff",
-    marginTop: 6,
-    textDecorationLine: "underline",
   },
 });

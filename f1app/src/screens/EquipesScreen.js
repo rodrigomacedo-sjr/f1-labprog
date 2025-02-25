@@ -11,11 +11,15 @@ import {
 } from "react-native";
 import EquipeCard from "../components/EquipeCard";
 
+// Tela que exibe a lista de equipes
 export default function EquipesScreen() {
+
+  // Estado para armazenar as equipes, o status de carregamento e o texto de pesquisa
   const [equipes, setEquipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
 
+  // useEffect para buscar os dados das equipes ao montar o componente
   useEffect(() => {
     const fetchEquipesData = async () => {
       try {
@@ -23,6 +27,7 @@ export default function EquipesScreen() {
           "http://ergast.com/api/f1/2024/constructors.json",
         );
         const json = await response.json();
+        // Extrai as equipes dos dados recebidos
         const ergastTeams = json.MRData.ConstructorTable.Constructors;
         setEquipes(ergastTeams);
       } catch (error) {
@@ -35,7 +40,7 @@ export default function EquipesScreen() {
     fetchEquipesData();
   }, []);
 
-  // Filtra as equipes com base no texto digitado (case insensitive)
+  // Filtra as equipes com base no texto digitado, ignorando maiúsculas e minúsculas
   const filteredEquipes = equipes.filter((equipe) => {
     const searchLower = searchText.toLowerCase();
     const name = equipe.name ? equipe.name.toLowerCase() : "";
@@ -45,6 +50,7 @@ export default function EquipesScreen() {
     return name.includes(searchLower) || nationality.includes(searchLower);
   });
 
+  // Exibe um indicador de carregamento enquanto os dados são buscados
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -55,6 +61,8 @@ export default function EquipesScreen() {
 
   return (
     <View style={styles.container}>
+
+      {/* Campo de pesquisa para filtrar as equipes */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -64,6 +72,8 @@ export default function EquipesScreen() {
           autoCapitalize="none"
           autoCorrect={false}
         />
+
+        {/* Botão para limpar o texto de pesquisa e fechar o teclado */}
         {searchText !== "" && (
           <TouchableOpacity
             style={styles.clearButton}
@@ -76,6 +86,8 @@ export default function EquipesScreen() {
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Lista das equipes filtradas */}
       <FlatList
         data={filteredEquipes}
         keyExtractor={(item) => item.constructorId}

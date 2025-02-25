@@ -3,8 +3,10 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function PilotoCard({ piloto, onPress }) {
+  // Hook para navegar entre telas
   const navigation = useNavigation();
 
+  // Extrair propriedades do objeto piloto
   const {
     givenName,
     familyName,
@@ -13,14 +15,16 @@ export default function PilotoCard({ piloto, onPress }) {
     team_colour,
     team_name,
     country_code,
-    code,
   } = piloto;
 
+  // Define a URL da foto. Se não houver foto, usa um placeholder.
   const photoUrl = headshot_url
     ? headshot_url
-    : `https://via.placeholder.com/100?text=${code}`;
+    : `https://via.placeholder.com/100`;
 
+  // Função chamada ao pressionar o card
   const handlePress = () => {
+    // Utiliza função passada via props, se houver.
     if (onPress) {
       onPress();
     } else {
@@ -39,6 +43,7 @@ export default function PilotoCard({ piloto, onPress }) {
           },
         ]}
       >
+        {/* Container esquerdo com a foto e informações do piloto */}
         <View style={styles.leftContainer}>
           <Image source={{ uri: photoUrl }} style={styles.image} />
           <View style={styles.info}>
@@ -51,6 +56,8 @@ export default function PilotoCard({ piloto, onPress }) {
             <Text style={styles.team}>{team_name}</Text>
           </View>
         </View>
+
+        {/* Exibe número do piloto destacado */}
         <View style={styles.numberContainer}>
           <Text
             style={[
@@ -74,8 +81,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 6,
     marginHorizontal: 16,
-    elevation: 3,
-    shadowColor: "#000",
+    elevation: 3, // Sombra para Android
+    shadowColor: "#000", // Sombra para iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,

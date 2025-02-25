@@ -11,14 +11,19 @@ import {
 } from "react-native";
 import PilotoCard from "../components/PilotoCard";
 
+// Tela que exibe a lista de pilotos
 export default function PilotosScreen() {
+
+  // Estados para armazenar os pilotos, o carregamento e o texto de pesquisa
   const [pilotos, setPilotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
 
+  // useEffect para buscar os dados dos pilotos ao montar o componente
   useEffect(() => {
     const fetchDriversData = async () => {
       try {
+
         // Busca dados na Ergast API (2024)
         const responseErgast = await fetch(
           "http://ergast.com/api/f1/2024/drivers.json",
@@ -26,11 +31,11 @@ export default function PilotosScreen() {
         const jsonErgast = await responseErgast.json();
         const ergastDrivers = jsonErgast.MRData.DriverTable.Drivers;
 
-        // Busca mais dados na OpenF1 API
+        // Busca dados adicionais na OpenF1 API
         const responseOpenF1 = await fetch("https://api.openf1.org/v1/drivers");
         const openF1Drivers = await responseOpenF1.json();
 
-        // Junta os dados usando Drivers.code (Ergast) e name_acronym (OpenF1)
+        // Une os dados das duas APIs usando o código do piloto
         const mergedDrivers = ergastDrivers.map((piloto) => {
           const pilotoCode = piloto.code ? piloto.code.toUpperCase() : "";
           const additionalData = openF1Drivers.find(
@@ -67,7 +72,7 @@ export default function PilotosScreen() {
     fetchDriversData();
   }, []);
 
-  // Filtra os pilotos com base no texto digitado (case insensitive)
+  // Filtra os pilotos com base no texto digitado (ignora diferenças de maiúsculas e minúsculas)
   const filteredPilotos = pilotos.filter((piloto) => {
     const searchLower = searchText.toLowerCase();
     const fullName = `${piloto.givenName} ${piloto.familyName}`.toLowerCase();
@@ -80,6 +85,7 @@ export default function PilotosScreen() {
     );
   });
 
+  // Exibe um indicador de carregamento enquanto os dados são buscados
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -90,6 +96,8 @@ export default function PilotosScreen() {
 
   return (
     <View style={styles.container}>
+
+      {/* Barra de pesquisa */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -111,6 +119,8 @@ export default function PilotosScreen() {
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Lista de pilotos filtrados */}
       <FlatList
         data={filteredPilotos}
         keyExtractor={(item) => item.driverId}
