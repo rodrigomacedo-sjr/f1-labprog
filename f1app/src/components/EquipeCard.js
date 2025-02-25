@@ -11,11 +11,13 @@ export default function EquipeCard({ equipe }) {
 
   return (
     <TouchableOpacity style={styles.card} onPress={handlePress}>
+      <View style={styles.colorBar} />
       <View style={styles.info}>
         <Text style={styles.name}>{equipe.name}</Text>
         <Text style={styles.nationality}>
           Nacionalidade: {equipe.nationality}
         </Text>
+        {equipe.url && <Text style={styles.link}>Ver na Wikipedia</Text>}
       </View>
     </TouchableOpacity>
   );
@@ -23,9 +25,10 @@ export default function EquipeCard({ equipe }) {
 
 const styles = StyleSheet.create({
   card: {
+    flexDirection: "row",
     backgroundColor: "#fff",
     borderRadius: 8,
-    padding: 15,
+    overflow: "hidden",
     marginVertical: 6,
     marginHorizontal: 16,
     elevation: 3,
@@ -34,16 +37,28 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
+  colorBar: {
+    width: 10,
+    backgroundColor: "#000",
+  },
   info: {
-    flexDirection: "column",
+    flex: 1,
+    padding: 15,
+    justifyContent: "center",
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
+    marginBottom: 4,
   },
   nationality: {
     fontSize: 16,
     color: "#555",
-    marginVertical: 4,
+  },
+  link: {
+    fontSize: 14,
+    color: "#1e90ff",
+    marginTop: 6,
+    textDecorationLine: "underline",
   },
 });

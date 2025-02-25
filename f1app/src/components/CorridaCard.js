@@ -2,6 +2,13 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
+// Função para formatar a data de "YYYY-MM-DD" para "DD/MM/YYYY"
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const [year, month, day] = dateStr.split("-");
+  return `${day}/${month}/${year}`;
+};
+
 export default function CorridaCard({ corrida, onPress }) {
   const navigation = useNavigation();
 
@@ -13,6 +20,10 @@ export default function CorridaCard({ corrida, onPress }) {
     }
   };
 
+  // Formatação da data e hora
+  const formattedDate = formatDate(corrida.date);
+  const formattedTime = corrida.time ? corrida.time.substring(0, 5) : "";
+
   return (
     <TouchableOpacity onPress={handlePress}>
       <View style={styles.card}>
@@ -22,10 +33,12 @@ export default function CorridaCard({ corrida, onPress }) {
           {corrida.Circuit.Location.locality},{" "}
           {corrida.Circuit.Location.country}
         </Text>
-        <Text style={styles.date}>
-          Data: {corrida.date}{" "}
-          {corrida.time ? `- Hora: ${corrida.time.substring(0, 5)}` : ""}
-        </Text>
+        <View style={styles.dateContainer}>
+          <Text style={styles.date}>Data: {formattedDate}</Text>
+          {formattedTime !== "" && (
+            <Text style={styles.time}>Hora: {formattedTime}</Text>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -34,32 +47,43 @@ export default function CorridaCard({ corrida, onPress }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 15,
-    marginVertical: 6,
+    borderRadius: 10,
+    padding: 16,
+    marginVertical: 8,
     marginHorizontal: 16,
-    elevation: 3,
+    elevation: 4,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   raceName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
+    color: "#333",
+    marginBottom: 4,
   },
   circuitName: {
     fontSize: 16,
-    marginVertical: 4,
+    fontStyle: "italic",
     color: "#555",
+    marginBottom: 4,
   },
   location: {
     fontSize: 14,
-    color: "#333",
+    color: "#777",
+    marginBottom: 8,
+  },
+  dateContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   date: {
     fontSize: 14,
-    color: "#777",
-    marginTop: 4,
+    color: "#444",
+  },
+  time: {
+    fontSize: 14,
+    color: "#444",
   },
 });

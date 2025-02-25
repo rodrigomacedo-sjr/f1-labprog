@@ -39,16 +39,25 @@ export default function PilotoCard({ piloto, onPress }) {
           },
         ]}
       >
-        <Image source={{ uri: photoUrl }} style={styles.image} />
-        <View style={styles.info}>
-          <Text style={styles.name}>
-            {givenName} {familyName}
-          </Text>
-          {country_code && (
-            <Text style={styles.country}>País: {country_code}</Text>
-          )}
-          <Text style={styles.team}>{team_name}</Text>
-          <Text style={styles.number}>
+        <View style={styles.leftContainer}>
+          <Image source={{ uri: photoUrl }} style={styles.image} />
+          <View style={styles.info}>
+            <Text style={styles.name}>
+              {givenName} {familyName}
+            </Text>
+            {country_code && (
+              <Text style={styles.country}>País: {country_code}</Text>
+            )}
+            <Text style={styles.team}>{team_name}</Text>
+          </View>
+        </View>
+        <View style={styles.numberContainer}>
+          <Text
+            style={[
+              styles.number,
+              { color: team_colour ? `#${team_colour}` : "#e91e63" },
+            ]}
+          >
             #{permanentNumber ? permanentNumber : "N/A"}
           </Text>
         </View>
@@ -70,6 +79,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    alignItems: "center",
+  },
+  leftContainer: {
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "center",
   },
   image: {
     width: 80,
@@ -93,9 +108,13 @@ const styles = StyleSheet.create({
     color: "#555",
     marginVertical: 4,
   },
+  numberContainer: {
+    justifyContent: "center",
+    alignItems: "flex-end",
+    paddingHorizontal: 10,
+  },
   number: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#e91e63",
   },
 });

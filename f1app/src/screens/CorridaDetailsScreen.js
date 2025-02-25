@@ -3,10 +3,23 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
+  TouchableOpacity,
   Linking,
   ScrollView,
 } from "react-native";
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const [year, month, day] = dateStr.split("-");
+  return `${day}/${month}/${year}`;
+};
+
+const InfoRow = ({ label, value }) => (
+  <View style={styles.infoRow}>
+    <Text style={styles.infoLabel}>{label}</Text>
+    <Text style={styles.infoValue}>{value}</Text>
+  </View>
+);
 
 export default function CorridaDetailsScreen({ route }) {
   const { corrida } = route.params;
@@ -30,90 +43,61 @@ export default function CorridaDetailsScreen({ route }) {
     }
   };
 
+  const formattedDate = formatDate(date);
+  const formattedTime = time ? time.substring(0, 5) : "N/A";
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>{raceName}</Text>
-
-      <View style={styles.section}>
-        <Text style={styles.label}>Temporada:</Text>
-        <Text style={styles.value}>{season}</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>{raceName}</Text>
       </View>
-
-      <View style={styles.section}>
-        <Text style={styles.label}>Rodada:</Text>
-        <Text style={styles.value}>{round}</Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.label}>Data:</Text>
-        <Text style={styles.value}>{date}</Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.label}>Hora:</Text>
-        <Text style={styles.value}>{time ? time.substring(0, 5) : "N/A"}</Text>
-      </View>
-
-      {Circuit && (
-        <>
-          <View style={styles.section}>
-            <Text style={styles.label}>Circuito:</Text>
-            <Text style={styles.value}>{Circuit.circuitName}</Text>
-          </View>
-
-          {Circuit.Location && (
-            <View style={styles.section}>
-              <Text style={styles.label}>Localização:</Text>
-              <Text style={styles.value}>
-                {Circuit.Location.locality}, {Circuit.Location.country}
-              </Text>
-            </View>
-          )}
-        </>
-      )}
-
-      {FirstPractice && (
-        <View style={styles.section}>
-          <Text style={styles.label}>Primeiro Treino:</Text>
-          <Text style={styles.value}>
-            {FirstPractice.date} -{" "}
-            {FirstPractice.time ? FirstPractice.time.substring(0, 5) : ""}
-          </Text>
-        </View>
-      )}
-
-      {SecondPractice && (
-        <View style={styles.section}>
-          <Text style={styles.label}>Segundo Treino:</Text>
-          <Text style={styles.value}>
-            {SecondPractice.date} -{" "}
-            {SecondPractice.time ? SecondPractice.time.substring(0, 5) : ""}
-          </Text>
-        </View>
-      )}
-
-      {ThirdPractice && (
-        <View style={styles.section}>
-          <Text style={styles.label}>Terceiro Treino:</Text>
-          <Text style={styles.value}>
-            {ThirdPractice.date} -{" "}
-            {ThirdPractice.time ? ThirdPractice.time.substring(0, 5) : ""}
-          </Text>
-        </View>
-      )}
-
-      {Qualifying && (
-        <View style={styles.section}>
-          <Text style={styles.label}>Qualificação:</Text>
-          <Text style={styles.value}>
-            {Qualifying.date} -{" "}
-            {Qualifying.time ? Qualifying.time.substring(0, 5) : ""}
-          </Text>
-        </View>
-      )}
-
-      <View style={styles.buttonContainer}>
-        <Button title="Ver na Wikipedia" onPress={openWikipedia} />
+      <View style={styles.detailsCard}>
+        <InfoRow label="Temporada:" value={season} />
+        <InfoRow label="Rodada:" value={round} />
+        <InfoRow label="Data:" value={formattedDate} />
+        <InfoRow label="Hora:" value={formattedTime} />
+        {Circuit && (
+          <>
+            <InfoRow label="Circuito:" value={Circuit.circuitName} />
+            {Circuit.Location && (
+              <InfoRow
+                label="Localização:"
+                value={`${Circuit.Location.locality}, ${Circuit.Location.country}`}
+              />
+            )}
+          </>
+        )}
+        {FirstPractice && (
+          <InfoRow
+            label="1º Treino:"
+            value={`${formatDate(FirstPractice.date)} - ${FirstPractice.time ? FirstPractice.time.substring(0, 5) : "N/A"
+              }`}
+          />
+        )}
+        {SecondPractice && (
+          <InfoRow
+            label="2º Treino:"
+            value={`${formatDate(SecondPractice.date)} - ${SecondPractice.time ? SecondPractice.time.substring(0, 5) : "N/A"
+              }`}
+          />
+        )}
+        {ThirdPractice && (
+          <InfoRow
+            label="3º Treino:"
+            value={`${formatDate(ThirdPractice.date)} - ${ThirdPractice.time ? ThirdPractice.time.substring(0, 5) : "N/A"
+              }`}
+          />
+        )}
+        {Qualifying && (
+          <InfoRow
+            label="Qualificação:"
+            value={`${formatDate(Qualifying.date)} - ${Qualifying.time ? Qualifying.time.substring(0, 5) : "N/A"
+              }`}
+          />
+        )}
+        <TouchableOpacity style={styles.button} onPress={openWikipedia}>
+          <Text style={styles.buttonText}>Ver na Wikipedia</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -122,26 +106,59 @@ export default function CorridaDetailsScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#f7f7f7",
   },
   header: {
-    fontSize: 24,
-    fontWeight: "bold",
+    backgroundColor: "#56b4e9",
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    borderRadius: 8,
     marginBottom: 16,
+    alignItems: "center",
+  },
+  headerText: {
+    fontSize: 26,
+    color: "#fff",
+    fontWeight: "bold",
     textAlign: "center",
   },
-  section: {
+  detailsCard: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  infoRow: {
+    flexDirection: "row",
     marginBottom: 12,
   },
-  label: {
+  infoLabel: {
     fontSize: 16,
     fontWeight: "bold",
+    width: 120,
+    color: "#333",
   },
-  value: {
+  infoValue: {
     fontSize: 16,
     color: "#555",
+    flex: 1,
+    flexWrap: "wrap",
   },
-  buttonContainer: {
+  button: {
+    backgroundColor: "#007AFF",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignSelf: "center",
     marginTop: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

@@ -63,33 +63,50 @@ export default function EquipeDetailsScreen({ route, navigation }) {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.name}>{equipe.name}</Text>
-        <Text style={styles.nationality}>
-          Nacionalidade: {equipe.nationality}
-        </Text>
-        <Button title="Ver na Wikipedia" onPress={openWikipedia} />
-      </View>
-
-      <Text style={styles.sectionTitle}>Histórico de Pilotos:</Text>
-      {loading ? (
-        <ActivityIndicator size="large" color="#e91e63" />
-      ) : (
-        <FlatList
-          data={pilotos}
-          keyExtractor={(item) => item.driverId}
-          renderItem={({ item }) => (
-            <PilotoCard
-              piloto={item}
-              onPress={() => navigation.push("PilotoDetails", { piloto: item })}
+  // ListHeader separado: primeiro o card da equipe e logo abaixo o título "Histórico de Pilotos:"
+  const ListHeader = () => (
+    <>
+      <View style={styles.teamCard}>
+        <View style={styles.colorBar} />
+        <View style={styles.teamInfo}>
+          <Text style={styles.teamName}>{equipe.name}</Text>
+          <Text style={styles.teamNationality}>
+            Nacionalidade: {equipe.nationality}
+          </Text>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Ver na Wikipedia"
+              onPress={openWikipedia}
+              color="#007AFF"
             />
-          )}
-          contentContainerStyle={styles.list}
+          </View>
+        </View>
+      </View>
+      <Text style={styles.sectionTitle}>Histórico de Pilotos:</Text>
+    </>
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#e91e63" />
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      data={pilotos}
+      keyExtractor={(item) => item.driverId}
+      renderItem={({ item }) => (
+        <PilotoCard
+          piloto={item}
+          onPress={() => navigation.push("PilotoDetails", { piloto: item })}
         />
       )}
-    </View>
+      ListHeaderComponent={ListHeader}
+      contentContainerStyle={styles.list}
+    />
   );
 }
 
@@ -97,35 +114,54 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f2f2f2",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  teamCard: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
+    margin: 20,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    alignItems: "center",
+  },
+  colorBar: {
+    width: 8,
+  },
+  teamInfo: {
+    flex: 1,
     padding: 16,
   },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 16,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  name: {
-    fontSize: 22,
+  teamName: {
+    fontSize: 24,
     fontWeight: "bold",
+    color: "#333",
     marginBottom: 8,
   },
-  nationality: {
+  teamNationality: {
     fontSize: 18,
     color: "#555",
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  buttonContainer: {
+    alignSelf: "flex-start",
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
-    marginVertical: 10,
+    color: "#333",
+    marginHorizontal: 16,
+    marginBottom: 12,
   },
   list: {
-    paddingVertical: 10,
+    paddingBottom: 20,
   },
 });
