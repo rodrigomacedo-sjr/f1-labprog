@@ -5,6 +5,9 @@ import {
   ActivityIndicator,
   StyleSheet,
   TextInput,
+  TouchableOpacity,
+  Keyboard,
+  Text,
 } from "react-native";
 import PilotoCard from "../components/PilotoCard";
 
@@ -87,14 +90,27 @@ export default function PilotosScreen() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Pesquisar pilotos..."
-        value={searchText}
-        onChangeText={setSearchText}
-        autoCapitalize="none"
-        autoCorrect={false}
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Pesquisar pilotos..."
+          value={searchText}
+          onChangeText={setSearchText}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        {searchText !== "" && (
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={() => {
+              setSearchText("");
+              Keyboard.dismiss();
+            }}
+          >
+            <Text style={styles.clearText}>×</Text>
+          </TouchableOpacity>
+        )}
+      </View>
       <FlatList
         data={filteredPilotos}
         keyExtractor={(item) => item.driverId}
@@ -110,14 +126,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f2f2f2",
   },
-  searchInput: {
-    height: 40,
+  searchContainer: {
+    flexDirection: "row",
     margin: 16,
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
     paddingHorizontal: 10,
-    backgroundColor: "#fff",
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+  },
+  clearButton: {
+    padding: 5,
+  },
+  clearText: {
+    fontSize: 18,
+    color: "#999",
   },
   list: {
     paddingVertical: 10,
