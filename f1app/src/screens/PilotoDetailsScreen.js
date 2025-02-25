@@ -1,5 +1,14 @@
-import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import React, { useContext } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { FavoritesContext } from "../contexts/FavoritesContext";
 
 // Função para formatar data de "YYYY-MM-DD" para "DD/MM/YYYY"
 const formatDate = (dateStr) => {
@@ -10,18 +19,43 @@ const formatDate = (dateStr) => {
 
 export default function PilotoDetailsScreen({ route }) {
   const { piloto } = route.params;
+  const { favorites, addFavoritePiloto, removeFavoritePiloto } =
+    useContext(FavoritesContext);
+
+  // Verifica se o piloto já está favoritado
+  const isFavorite = favorites.pilotos.some(
+    (p) => p.driverId === piloto.driverId,
+  );
+
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      removeFavoritePiloto(piloto.driverId);
+    } else {
+      addFavoritePiloto(piloto);
+    }
+  };
 
   // Se não houver headshot_url, usamos um placeholder sem texto
   const photoUrl = piloto.headshot_url
     ? piloto.headshot_url
     : "https://via.placeholder.com/150";
-
-  // A borda será a cor da equipe, se existir; caso contrário, preta
+  // Borda: cor da equipe ou preto
   const borderColor = piloto.team_colour ? `#${piloto.team_colour}` : "#000";
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.detailsCard}>
+        {/* Botão de Favoritar */}
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          onPress={toggleFavorite}
+        >
+          <Ionicons
+            name={isFavorite ? "heart" : "heart-outline"}
+            size={28}
+            color={isFavorite ? "#e91e63" : "#555"}
+          />
+        </TouchableOpacity>
         <Image
           source={{ uri: photoUrl }}
           style={[styles.image, { borderColor }]}
@@ -67,6 +101,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    position: "relative",
+  },
+  favoriteButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 1,
   },
   image: {
     width: 150,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,10 @@ import {
   Linking,
   ScrollView,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { FavoritesContext } from "../contexts/FavoritesContext";
 
+// Função para formatar data de "YYYY-MM-DD" para "DD/MM/YYYY"
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
   const [year, month, day] = dateStr.split("-");
@@ -37,6 +40,22 @@ export default function CorridaDetailsScreen({ route }) {
     Qualifying,
   } = corrida;
 
+  const { favorites, addFavoriteCorrida, removeFavoriteCorrida } =
+    useContext(FavoritesContext);
+
+  // Verifica se a corrida já está favoritada (usando season e round como identificador)
+  const isFavorite = favorites.corridas.some(
+    (c) => c.round === corrida.round && c.season === corrida.season,
+  );
+
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      removeFavoriteCorrida(corrida.round);
+    } else {
+      addFavoriteCorrida(corrida);
+    }
+  };
+
   const openWikipedia = () => {
     if (url) {
       Linking.openURL(url);
@@ -52,6 +71,17 @@ export default function CorridaDetailsScreen({ route }) {
         <Text style={styles.headerText}>{raceName}</Text>
       </View>
       <View style={styles.detailsCard}>
+        {/* Botão de Favoritar posicionado no canto superior direito do card */}
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          onPress={toggleFavorite}
+        >
+          <Ionicons
+            name={isFavorite ? "heart" : "heart-outline"}
+            size={28}
+            color={isFavorite ? "#e91e63" : "#555"}
+          />
+        </TouchableOpacity>
         <InfoRow label="Temporada:" value={season} />
         <InfoRow label="Rodada:" value={round} />
         <InfoRow label="Data:" value={formattedDate} />
@@ -131,6 +161,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    position: "relative",
+  },
+  favoriteButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 1,
   },
   infoRow: {
     flexDirection: "row",

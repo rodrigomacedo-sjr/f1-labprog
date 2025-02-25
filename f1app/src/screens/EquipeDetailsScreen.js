@@ -1,19 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
-  Button,
+  TouchableOpacity,
   Linking,
   FlatList,
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
 import PilotoCard from "../components/PilotoCard";
+import { FavoritesContext } from "../contexts/FavoritesContext";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function EquipeDetailsScreen({ route, navigation }) {
   const { equipe } = route.params;
   const [pilotos, setPilotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { favorites, addFavoriteEquipe, removeFavoriteEquipe } =
+    useContext(FavoritesContext);
+
+  // Verifica se a equipe já está favoritada
+  const isFavorite = favorites.equipes.some(
+    (item) => item.constructorId === equipe.constructorId,
+  );
+
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      removeFavoriteEquipe(equipe.constructorId);
+    } else {
+      addFavoriteEquipe(equipe);
+    }
+  };
 
   useEffect(() => {
     const fetchTeamDrivers = async () => {
@@ -63,24 +80,41 @@ export default function EquipeDetailsScreen({ route, navigation }) {
     }
   };
 
-  // ListHeader separado: primeiro o card da equipe e logo abaixo o título "Histórico de Pilotos:"
+  // Header do FlatList com o card da equipe
   const ListHeader = () => (
     <>
       <View style={styles.teamCard}>
-        <View style={styles.colorBar} />
+        {/* Barra lateral colorida */}
+        <View
+          style={[
+            styles.colorBar,
+            {
+              backgroundColor: equipe.team_colour
+                ? `#${equipe.team_colour}`
+                : "#000",
+            },
+          ]}
+        />
         <View style={styles.teamInfo}>
           <Text style={styles.teamName}>{equipe.name}</Text>
           <Text style={styles.teamNationality}>
             Nacionalidade: {equipe.nationality}
           </Text>
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Ver na Wikipedia"
-              onPress={openWikipedia}
-              color="#007AFF"
-            />
-          </View>
+          <TouchableOpacity style={styles.wikiButton} onPress={openWikipedia}>
+            <Text style={styles.wikiButtonText}>Ver na Wikipedia</Text>
+          </TouchableOpacity>
         </View>
+        {/* Botão de Favoritar */}
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          onPress={toggleFavorite}
+        >
+          <Ionicons
+            name={isFavorite ? "heart" : "heart-outline"}
+            size={28}
+            color={isFavorite ? "#e91e63" : "#555"}
+          />
+        </TouchableOpacity>
       </View>
       <Text style={styles.sectionTitle}>Histórico de Pilotos:</Text>
     </>
@@ -111,10 +145,6 @@ export default function EquipeDetailsScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f2f2f2",
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -132,6 +162,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     alignItems: "center",
+    position: "relative",
   },
   colorBar: {
     width: 8,
@@ -151,14 +182,29 @@ const styles = StyleSheet.create({
     color: "#555",
     marginBottom: 12,
   },
-  buttonContainer: {
+  wikiButton: {
+    backgroundColor: "#007AFF",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
     alignSelf: "flex-start",
+  },
+  wikiButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  favoriteButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 1,
   },
   sectionTitle: {
     fontSize: 22,
     fontWeight: "bold",
     color: "#333",
-    marginHorizontal: 16,
+    marginHorizontal: 20,
     marginBottom: 12,
   },
   list: {
