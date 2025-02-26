@@ -44,7 +44,7 @@ export default function PilotoDetailsScreen({ route }) {
   // Define a URL da foto do piloto ou utiliza um placeholder se não houver imagem
   const photoUrl = piloto.headshot_url
     ? piloto.headshot_url
-    : "https://via.placeholder.com/150";
+    : `https://placehold.co/150`;
 
   // Define a cor da borda da imagem usando a cor da equipe ou preto se não estiver disponível
   const borderColor = piloto.team_colour ? `#${piloto.team_colour}` : "#000";

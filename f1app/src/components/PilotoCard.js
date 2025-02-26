@@ -20,7 +20,7 @@ export default function PilotoCard({ piloto, onPress }) {
   // Define a URL da foto. Se não houver foto, usa um placeholder.
   const photoUrl = headshot_url
     ? headshot_url
-    : `https://via.placeholder.com/100`;
+    : `https://placehold.co/100`;
 
   // Função chamada ao pressionar o card
   const handlePress = () => {
